@@ -1,21 +1,23 @@
 #include <cassert>
 #include <cstdio>
 #include "main.h"
-#if IS_RPI
+#ifdef IS_RPI
 #include <pi_i2c.h>
 #endif
 
 void i2c_setup( int sda, int scl )
 {
-    #if IS_RPI
-    config_i2c( sda, scl, I2C_STANDARD_MODE );
+    #ifdef IS_RPI
+    if( auto e = config_i2c( sda, scl, I2C_STANDARD_MODE ); e != 0 )
+        std::printf( "ERROR: config err %d\n", e );
     #endif
 }
 
 void i2c_read( int device_address, int register_address, int* data, int bytes )
 {
-    #if IS_RPI
-    read_i2c( device_address, register_address, data, bytes );
+    #ifdef IS_RPI
+    if( auto e = read_i2c( device_address, register_address, data, bytes ); e != 0 )
+        std::printf( "ERROR: read err %d\n", e );
     #endif
 }
 
@@ -37,6 +39,7 @@ void write_file( std::FILE* f, int sensor1, int page_update_interval_ms )
 int main()
 {
     int dat = 250;
+    i2c_setup( 1, 2 );
     i2c_read( 0, 15, &dat, 1 );
     write_file( std::fopen( "waaa.html", "w" ), dat, 2500 );
 }

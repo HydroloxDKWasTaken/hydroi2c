@@ -20,6 +20,7 @@ if( IS_RPI )
         ext/pi_i2c/src/utility/read_bus.c
         ext/pi_i2c/src/utility/write_bus.c
         ext/pi_i2c/src/utility/write_conditions_to_bus.c )
+    target_link_libraries( hydropi2c PRIVATE pimicrosleephard pilwgpio )
 endif()
 target_sources( hydropi2c PRIVATE
         src/main.cpp )
