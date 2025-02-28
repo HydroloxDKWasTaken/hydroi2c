@@ -2,7 +2,10 @@
 #include <cstdio>
 #include "main.h"
 #ifdef IS_RPI
+extern "C"
+{
 #include <pi_i2c.h>
+}
 #endif
 
 void i2c_setup( int sda, int scl )
