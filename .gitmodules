@@ -1,3 +1,0 @@
-[submodule "ext/pi_i2c"]
-	path = ext/pi_i2c
-	url = https://github.com/besp9510/pi_i2c.git
