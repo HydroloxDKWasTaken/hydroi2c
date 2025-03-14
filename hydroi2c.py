@@ -1,23 +1,40 @@
-import smbus2
+import serial
+import struct
 
-def write_file(file, sensor1, page_update_interval_ms = 2500):
+def write_html_boilerplate(file, content, page_update_interval_ms):
     file.write('<html>' +
                '<body>' +
                '<script>' +
                'setTimeout( function() {' +
                'window.location.reload();' +
-               '},' + str(page_update_interval_ms) + ');' +
+               '},' + str(page_update_interval_ms) + ' );' +
                '</script>' +
-               'querhio ' + str(sensor1) +
+               content +
                '</body>' +
                '</html>')
 
-# with open('waaa.html', 'w') as f:
-#     write_file(f, 123456)
+def write_error_html(file):
+    write_html_boilerplate(file, '<span style="color: red;">ERROR</span>')
 
-bus = smbus2.SMBus(1)
+def write_html(file, sensor1, page_update_interval_ms = 2500):
+    write_html_boilerplate(file,
+                           'Sensor1: ' + str(sensor1),
+                           page_update_interval_ms )
+
+
+# < indikerar little-endian för hela formatet
+# följt av en float (f)
+DATA_FORMAT = '<f'
+
+ser = serial.Serial('/dev/ttyAMA0',baudrate=9600)
 while True:
-    # antag att master har address 0...
-    # och jag har address 10
-    data = bus.read_i2c_block_data(10, 0, length=4)
-    print(str(data))
+    try:
+        raw_data = ser.read(struct.calcsize(DATA_FORMAT))
+        data = struct.unpack(DATA_FORMAT, raw_data)
+        (sensor1,) = data
+        print(str(data) + '  ' + raw_data.hex(sep=' '))
+        with open('stream.html', 'w') as f:
+            write_html(f, sensor1)
+    except:
+        with open('stream.html', 'w') as f:
+            write_error_html(f)
