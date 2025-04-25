@@ -14,7 +14,7 @@ def write_html_boilerplate(file, content, page_update_interval_ms):
                '</html>')
 
 def write_error_html(file):
-    write_html_boilerplate(file, '<span style="color: red;">ERROR</span>')
+    write_html_boilerplate(file, '<span style="color: red;font-size: 30vh;">ERROR</span>', 2500)
 
 def write_html(file, sensor1, page_update_interval_ms = 2500):
     write_html_boilerplate(file,
